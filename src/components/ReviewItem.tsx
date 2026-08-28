@@ -1,4 +1,4 @@
-import type { Review } from "@/lib/types";
+import type { Review } from "#/lib/types";
 
 export function ReviewItem({ review }: { review: Review }) {
     return (

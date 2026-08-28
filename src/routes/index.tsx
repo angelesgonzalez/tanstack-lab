@@ -1,7 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { getHouses } from "@/lib/api";
+import { getHouses } from "#/lib/api";
 import { toHouseCardVM } from "#/lib/mappers";
-import { HouseCard } from "@/components/HouseCard";
+import { HouseCard } from "#/components/HouseCard";
 
 
 export const Route = createFileRoute("/")({

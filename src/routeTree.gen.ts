@@ -11,6 +11,7 @@
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as NotFoundRouteImport } from './routes/not-found'
+import { Route as HousesIdRouteImport } from './routes/houses/$id'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
@@ -22,31 +23,40 @@ const NotFoundRoute = NotFoundRouteImport.update({
   path: '/not-found',
   getParentRoute: () => rootRouteImport,
 } as any)
+const HousesIdRoute = HousesIdRouteImport.update({
+  id: '/houses/$id',
+  path: '/houses/$id',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/not-found': typeof NotFoundRoute
+  '/houses/$id': typeof HousesIdRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/not-found': typeof NotFoundRoute
+  '/houses/$id': typeof HousesIdRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/not-found': typeof NotFoundRoute
+  '/houses/$id': typeof HousesIdRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/not-found'
+  fullPaths: '/' | '/not-found' | '/houses/$id'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/not-found'
-  id: '__root__' | '/' | '/not-found'
+  to: '/' | '/not-found' | '/houses/$id'
+  id: '__root__' | '/' | '/not-found' | '/houses/$id'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   NotFoundRoute: typeof NotFoundRoute
+  HousesIdRoute: typeof HousesIdRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -65,12 +75,20 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof NotFoundRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/houses/$id': {
+      id: '/houses/$id'
+      path: '/houses/$id'
+      fullPath: '/houses/$id'
+      preLoaderRoute: typeof HousesIdRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   NotFoundRoute: NotFoundRoute,
+  HousesIdRoute: HousesIdRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
