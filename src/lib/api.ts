@@ -1,7 +1,7 @@
 import { createServerFn } from "@tanstack/react-start";
-import { House } from "./types";
+import type { House } from "./types";
 
-export const getHouses = createServerFN({ method: 'GET' }).handler(
+export const getHouses = createServerFn({ method: 'GET' }).handler(
 
     async (): Promise<House[]> => {
 
