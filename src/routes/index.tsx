@@ -5,6 +5,7 @@ import { HouseCard } from "#/components/HouseCard";
 
 
 export const Route = createFileRoute("/")({
+  staleTime: 60 * 60 * 1000,
   loader: async () => {
     const houses = await getHouses();
     return houses.map(toHouseCardVM);

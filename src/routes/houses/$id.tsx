@@ -4,6 +4,7 @@ import { toHouseDetailVM } from "#/lib/mappers";
 import { ReviewItem } from "#/components/ReviewItem";
 
 export const Route = createFileRoute("/houses/$id")({
+  staleTime: 60 * 60 * 1000,
   loader: async ({ params }) => {
     const house = await getHouseById({ data: params.id });
 
