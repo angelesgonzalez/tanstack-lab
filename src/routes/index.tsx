@@ -19,7 +19,7 @@ function Home() {
   return (
     <div>
       <h1 className="font-mono text-xs uppercase tracking-widest text-zinc-500">
-        {houseCards.length} casas rurales
+        {houseCards.length} rural houses
       </h1>
       <div className="mt-8 grid grid-cols-1 gap-x-8 gap-y-12 sm:grid-cols-2 lg:grid-cols-3">
         {houseCards.map((house) => (

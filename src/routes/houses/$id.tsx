@@ -38,7 +38,7 @@ function HouseDetailPage() {
       <div className="mt-8 grid grid-cols-1 gap-8 sm:grid-cols-[2fr_1fr]">
         <div>
           <h2 className="font-mono text-xs uppercase tracking-widest text-zinc-500">
-            Descripción
+            Description
           </h2>
           <p className="mt-2 text-zinc-700">{detail.description}</p>
         </div>
@@ -46,14 +46,14 @@ function HouseDetailPage() {
         <div className="space-y-4">
           <div>
             <h2 className="font-mono text-xs uppercase tracking-widest text-zinc-500">
-              Dirección
+              Address
             </h2>
             <p className="mt-2 text-zinc-700">{detail.address}</p>
           </div>
           <div className="flex gap-6 font-mono text-sm text-zinc-700">
-            <span>{detail.bedrooms} hab.</span>
-            <span>{detail.beds} camas</span>
-            <span>{detail.bathrooms} baños</span>
+            <span>{detail.bedrooms} bd</span>
+            <span>{detail.beds} beds</span>
+            <span>{detail.bathrooms} ba</span>
           </div>
         </div>
       </div>

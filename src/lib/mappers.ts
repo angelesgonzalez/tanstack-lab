@@ -13,7 +13,7 @@ export const toHouseCardVM = (house: House): HouseCardVM => {
         id: house.id,
         title: house.name,
         location: `${house.city}, ${house.country}`,
-        price: `${house.price}€/noche`,
+        price: `${house.price}€/night`,
         imageUrl: `${import.meta.env.VITE_API_URL}${house.image}`,
     };
 };
@@ -36,7 +36,7 @@ export const toHouseDetailVM = (house: House): HouseDetailVM => {
     return {
         id: house.id,
         title: house.name,
-        price: `${house.price}€/noche`,
+        price: `${house.price}€/night`,
         description: house.description,
         address: `${house.address}, ${house.city}, ${house.country}`,
         bedrooms: house.bedrooms,
