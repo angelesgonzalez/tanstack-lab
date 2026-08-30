@@ -1,194 +1,63 @@
-Welcome to your new TanStack Start app!
+# Casas Rurales — TanStack Start
 
-# Getting Started
+Rural house rental listing built with TanStack Start for the MetaFrameworks lab. Two screens: house listing and house detail, both pulling from the mock API server provided on the exercise.
 
-To run this application:
+## Demo
 
-```bash
-npm install
-npm run dev
-```
+| Listing | Detail |
+|---|---|
+| ![House listing](./demo/demo-list.png) | ![House detail](./demo/demo-detail.png) |
 
-# Building For Production
+## Stack
 
-To build this application for production:
+- TanStack Start + TanStack Router (file-based routing) + TypeScript
+- Tailwind CSS v4
+- Mock API: [master-frontend-metaframeworks-lab](https://github.com/Lemoncode/master-frontend-metaframeworks-lab) (Hono server, port 3001)
 
-```bash
-npm run build
-```
+## Decisions
 
-## Styling
+| Area | Choice | Why |
+|---|---|---|
+| Rendering | SSR by default + `staleTime: 3600000` (1h) on both routes' loaders | TanStack Start doesn't have a build-time SSG concept like Next, so `staleTime` caches loader results, letting repeat visits within the window skip refetching, the closest equivalent to ISR here |
+| Server-only data | `createServerFn` for `getHouses`/`getHouseById` | Wanted to keep API keys/secrets safe and avoid pulling data straight from the client, so I wrapped the fetch in `createServerFn` to protect it, even though there's no real secret to protect in this exercise |
+| Env vars | Single `VITE_API_URL` (public) for image URLs, plus a private `API_URL` (server-only) used inside `createServerFn` for data fetching | Practiced both patterns: images need to resolve from the client bundle (Vite's `VITE_` prefix), while the actual data fetch is wrapped in a server function so a real secret key would never reach the browser |
+| Folder structure | Layer-based (`routes/`, `components/`, `lib/`) over feature-based | Same reasoning as the Next.js version, single domain, no benefit to splitting by feature |
+| Data shaping | API → ViewModel mappers (`lib/mappers.ts`) | Same pattern as Next.js, keeps formatting (price, location, image URL) out of JSX |
+| 404 handling | `notFoundComponent` on the root route + `throw notFound()` in the detail loader | TanStack Router has no file-name convention for 404s like Next's `not-found.tsx`, so the component has to be registered explicitly so it renders in place, without changing the URL |
+| Images | Plain `<img>` | No image optimization added yet, TanStack's ecosystem option here is Unpic, not yet integrated |
 
-This project uses [Tailwind CSS](https://tailwindcss.com/) for styling.
+## What's implemented
 
-### Removing Tailwind CSS
+- House listing (`/`) with cards (image, name, location, price)
+- House detail (`/houses/$id`) with description, address, room/bed/bath counts, and reviews
+- Navigation between both screens
+- Custom 404 page for non-existent house IDs
 
-If you prefer not to use Tailwind CSS:
+Not implemented (optional in the assignment): search/filter, booking button, image optimization (Unpic).
 
-1. Remove the demo pages in `src/routes/demo/`
-2. Replace the Tailwind import in `src/styles.css` with your own styles
-3. Remove `tailwindcss()` from the plugins array in `vite.config.ts`
-4. Remove `@tailwindcss/vite` and `tailwindcss` from `package.json`
+## Running locally
 
-## Linting & Formatting
+1. Start the mock API server (from the cloned `master-frontend-metaframeworks-lab/api-server` repo):
 
+   ```
+   npm install
+   npm start
+   ```
 
-This project uses [eslint](https://eslint.org/) and [prettier](https://prettier.io/) for linting and formatting. Eslint is configured using [tanstack/eslint-config](https://tanstack.com/config/latest/docs/eslint). The following scripts are available:
+   Runs on `http://localhost:3001`.
 
-```bash
-npm run lint
-npm run format
-npm run check
-```
+2. In this project, create `.env`:
 
+   ```
+   API_URL=http://localhost:3001
+   VITE_API_URL=http://localhost:3001
+   ```
 
+3. Install and run:
 
-## Routing
+   ```
+   npm install
+   npm run dev
+   ```
 
-This project uses [TanStack Router](https://tanstack.com/router) with file-based routing. Routes are managed as files in `src/routes`.
-
-### Adding A Route
-
-To add a new route to your application just add a new file in the `./src/routes` directory.
-
-TanStack will automatically generate the content of the route file for you.
-
-Now that you have two routes you can use a `Link` component to navigate between them.
-
-### Adding Links
-
-To use SPA (Single Page Application) navigation you will need to import the `Link` component from `@tanstack/react-router`.
-
-```tsx
-import { Link } from "@tanstack/react-router";
-```
-
-Then anywhere in your JSX you can use it like so:
-
-```tsx
-<Link to="/about">About</Link>
-```
-
-This will create a link that will navigate to the `/about` route.
-
-More information on the `Link` component can be found in the [Link documentation](https://tanstack.com/router/v1/docs/framework/react/api/router/linkComponent).
-
-### Using A Layout
-
-In the File Based Routing setup the layout is located in `src/routes/__root.tsx`. Anything you add to the root route will appear in all the routes. The route content will appear in the JSX where you render `{children}` in the `shellComponent`.
-
-Here is an example layout that includes a header:
-
-```tsx
-import { HeadContent, Scripts, createRootRoute } from '@tanstack/react-router'
-
-export const Route = createRootRoute({
-  head: () => ({
-    meta: [
-      { charSet: 'utf-8' },
-      { name: 'viewport', content: 'width=device-width, initial-scale=1' },
-      { title: 'My App' },
-    ],
-  }),
-  shellComponent: ({ children }) => (
-    <html lang="en">
-      <head>
-        <HeadContent />
-      </head>
-      <body>
-        <header>
-          <nav>
-            <Link to="/">Home</Link>
-            <Link to="/about">About</Link>
-          </nav>
-        </header>
-        {children}
-        <Scripts />
-      </body>
-    </html>
-  ),
-})
-```
-
-More information on layouts can be found in the [Layouts documentation](https://tanstack.com/router/latest/docs/framework/react/guide/routing-concepts#layouts).
-
-## Server Functions
-
-TanStack Start provides server functions that allow you to write server-side code that seamlessly integrates with your client components.
-
-```tsx
-import { createServerFn } from '@tanstack/react-start'
-
-const getServerTime = createServerFn({
-  method: 'GET',
-}).handler(async () => {
-  return new Date().toISOString()
-})
-
-// Use in a component
-function MyComponent() {
-  const [time, setTime] = useState('')
-  
-  useEffect(() => {
-    getServerTime().then(setTime)
-  }, [])
-  
-  return <div>Server time: {time}</div>
-}
-```
-
-## API Routes
-
-You can create API routes by using the `server` property in your route definitions:
-
-```tsx
-import { createFileRoute } from '@tanstack/react-router'
-import { json } from '@tanstack/react-start'
-
-export const Route = createFileRoute('/api/hello')({
-  server: {
-    handlers: {
-      GET: () => json({ message: 'Hello, World!' }),
-    },
-  },
-})
-```
-
-## Data Fetching
-
-There are multiple ways to fetch data in your application. You can use TanStack Query to fetch data from a server. But you can also use the `loader` functionality built into TanStack Router to load the data for a route before it's rendered.
-
-For example:
-
-```tsx
-import { createFileRoute } from '@tanstack/react-router'
-
-export const Route = createFileRoute('/people')({
-  loader: async () => {
-    const response = await fetch('https://swapi.dev/api/people')
-    return response.json()
-  },
-  component: PeopleComponent,
-})
-
-function PeopleComponent() {
-  const data = Route.useLoaderData()
-  return (
-    <ul>
-      {data.results.map((person) => (
-        <li key={person.name}>{person.name}</li>
-      ))}
-    </ul>
-  )
-}
-```
-
-Loaders simplify your data fetching logic dramatically. Check out more information in the [Loader documentation](https://tanstack.com/router/latest/docs/framework/react/guide/data-loading#loader-parameters).
-
-
-
-# Learn More
-
-You can learn more about all of the offerings from TanStack in the [TanStack documentation](https://tanstack.com).
-
-For TanStack Start specific documentation, visit [TanStack Start](https://tanstack.com/start).
+   Open `http://localhost:3000`.
